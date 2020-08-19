@@ -39,7 +39,7 @@ app.route.put('/user',  async function (req) {
     let encryptedPassword = aesUtil.encrypt(password, constants.cipher.key);
 
     if(!password.match(constants.regex)) return  {customCode: 4001, message: 'password must contain 6 to 20 at least one numeric digit, one uppercase and one lowercase letter'};
-    if(String(phoneNo).length != 10) return {customCode: 4002, message: 'invalid phoneNo'};
+    //if(String(phoneNo).length != 10) return {customCode: 4002, message: 'invalid phoneNo'};
 
     let identityEmailCheck = await app.model.Users.findOne({condition: { email: email, dappName: dappName, _deleted_: '0' }});
     if(identityEmailCheck) return {customCode: 4003, message: "user with the same email already exists"};
@@ -106,7 +106,7 @@ app.route.put('/user',  async function (req) {
       let jwtToken = auth.generateToken({fName: fName, lName:lName, phoneNo:phoneNo, email: email, encryptedPassword: encryptedPassword, dappName: dappName, role: role, hash: hash, countryCode: countryCode});
       let response = {};
       response.jwtToken = jwtToken;
-      response.message = "awaiting wallet address"
+      response.message = "awaiting for wallet address"
       return response;
     }
 })
@@ -114,7 +114,7 @@ app.route.put('/user',  async function (req) {
 app.route.put('/user/:token',  async function (req) {
     let data = auth.parseRequestToken(req.params.token);
     if(!data) return {customCode: 4004, message: "token expired"};
-    if(!data.email && !data.encryptedPassword) return {customCode: 4011, message: "invalid token"};
+    //if(!data.email && !data.encryptedPassword) return {customCode: 4011, message: "invalid token"};
 
     let identityEmailCheck = await app.model.Users.findOne({condition: { email: data.email, dappName: data.dappName, _deleted_: '0' }});
     if(identityEmailCheck) return {customCode: 4003, message: "user with the same email already exists"};

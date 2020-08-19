@@ -51,7 +51,7 @@ module.exports = {
         type: 'String',
         length: 256,
         default: "user",
-        enum: ["admin", "merchant", "user"]
+        enum: ["merchant", "user", "superadmin", "subadmin", "clinicmaster", "clinicadmin", "issuer", "authorizer"]
       },
       {
         name: 'status',
@@ -74,6 +74,15 @@ module.exports = {
         name: 'countryCode',
         type: 'String',
         length: 2
+      },
+      {
+        name: 'timestamp',
+        type: 'Number'
+      },
+      {
+        name: 'dappId',
+        type: 'String',
+        length: 256
       },
       {
         name: 'transactionId',

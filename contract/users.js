@@ -1,7 +1,7 @@
 var constants = require('../utils/constants.js');
 
 module.exports = {
-  registerUsers: async function(fName, lName, address, secret, phoneNo, email, password, dappName, role, hash, countryCode) {
+  registerUsers: async function(fName, lName, address, secret, phoneNo, email, password, dappName, role, hash, countryCode, dappId) {
     console.log("calling contract registerUsers: ", this);
     app.sdb.lock('users.registerUsers@' + email);
     // let exists = await app.model.Users.exists({email: email, phoneNo: phoneNo});
@@ -20,6 +20,8 @@ module.exports = {
       status: (secret)? "active": "inactive",
       hash: hash || null,
       countryCode: countryCode,
+      timestamp: this.trs.timestamp,
+      dappId: (dappId)? dappId: null,
       transactionId: this.trs.id
     });
   },

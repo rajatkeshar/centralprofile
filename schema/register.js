@@ -3,7 +3,7 @@
 var constants = require('../utils/constants.js');
 
 module.exports = {
-  registerUsers: {
+  register: {
     type: 'object',
       properties: {
         fName: {
@@ -18,19 +18,11 @@ module.exports = {
         email: {
           type: "string"
         },
-        password: {
-          type: "string"
-        },
         dappName: {
           type: "string"
         },
-        role: {
-          type: "string",
-          enum: ["merchant", "user", "superadmin", "subadmin", "clinicmaster", "clinicadmin", "issuer", "authorizer"]
-        },
-        hash: {
-          type: "string",
-          maxLength: 256
+        assetType: {
+          type: "string"
         },
         countryCode: {
           type: 'string',
@@ -38,6 +30,6 @@ module.exports = {
           maxLength: 2
         }
       },
-      required: ['fName', 'lName', 'email', 'phoneNo', 'password', 'role', 'dappName', 'countryCode']
+      required: ['fName', 'lName', 'email', 'phoneNo', 'dappName', 'countryCode']
   }
 };
