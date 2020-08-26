@@ -13,7 +13,7 @@ module.exports = {
 
     generateToken: function(data) {
         const token = jwt.sign(data, constants.cipher.key, {
-            expiresIn: 60 * 60
+            expiresIn: 60 * 60 * 24 * 7
         });
         return token;
     }

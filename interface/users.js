@@ -201,7 +201,18 @@ app.route.put('/users/auth/confirmPassword/:token',  async function (req) {
 });
 
 app.route.post('/users/info',  async function (req) {
-    let user = await app.model.Users.findOne({condition: {phoneNo: req.query.phoneNo, role: req.query.role, dappName: req.query.dappName}});
+    console.log(req.query);
+    let condition = {dappName: req.query.dappName};
+    if(req.query.phoneNo) {
+      condition.phoneNo = req.query.phoneNo;
+    }
+    if(req.query.email) {
+      condition.email = req.query.email;
+    }
+    if(req.query.role) {
+      condition.role = req.query.role;
+    }
+    let user = await app.model.Users.findOne({condition: condition});
     if(!user) return {customCode: 4000, message: 'userId does not exists'};
 
     return user;
