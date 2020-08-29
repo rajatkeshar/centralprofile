@@ -155,15 +155,23 @@ app.route.post('/users/role/:roleType',  async function (req) {
     let offset =  req.query.offset || 0;
     let limit = req.query.limit || 20;
     let dappName = req.query.dappName;
-    let count = await app.model.Users.count({ role: req.params.roleType, dappName: dappName });
-    let users = await app.model.Users.findAll({
-        offset: offset,
-        limit: limit,
-        condition: {role: req.params.roleType, dappName: dappName}
+
+    let users = await new Promise((resolve)=>{
+      if(req.params.roleType.toLowerCase() == "alladmin") {
+          var sql = `select * from users where role in("superadmin", "miniadmin", "clinicmaster", "clinicadmin", "clinicauthorizer", "clinicissuer") and dappName=\"${dappName}\" and _deleted_ = '0';`;
+      } else {
+          var sql = `select * from users where role in(\"${req.params.roleType}\") and dappName=\"${dappName}\" and _deleted_ = '0';`;
+      }
+      return app.sideChainDatabase.all(sql, (err, row)=>{
+          if(err) resolve({ message: JSON.stringify(err), result: {} });
+          resolve({ result: row });
+      });
     });
+    console.log("users: ", users);
+    users = (users && users.result && users.result.length)? users.result: [];
     users = users.map(user => { return _.omit(user, ["secret", "password", "token"])});
 
-    return {users: users, total: count};
+    return {users: users, total: users.length};
 });
 
 app.route.post('/users/auth/forgetPassword',  async function (req) {

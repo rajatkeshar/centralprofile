@@ -50,8 +50,8 @@ module.exports = {
         name: 'role',
         type: 'String',
         length: 256,
-        default: "user",
-        enum: ["merchant", "user", "superadmin", "subadmin", "clinicmaster", "clinicadmin", "issuer", "authorizer"]
+        default: "user",        
+        enum: ["merchant", "user", 'superadmin','miniadmin','clinicmaster','clinicadmin','clinicauthorizer','clinicissuer','patient']
       },
       {
         name: 'status',

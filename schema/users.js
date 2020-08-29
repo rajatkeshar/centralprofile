@@ -26,7 +26,7 @@ module.exports = {
         },
         role: {
           type: "string",
-          enum: ["merchant", "user", "superadmin", "subadmin", "clinicmaster", "clinicadmin", "issuer", "authorizer"]
+          enum: ["merchant", "user", 'superadmin','miniadmin','clinicmaster','clinicadmin','clinicauthorizer','clinicissuer','patient']
         },
         hash: {
           type: "string",
