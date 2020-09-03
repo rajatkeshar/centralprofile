@@ -43,8 +43,8 @@ app.route.put('/user',  async function (req) {
 
     let identityEmailCheck = await app.model.Users.findOne({condition: { email: email, dappName: dappName, _deleted_: '0' }});
     if(identityEmailCheck) return {customCode: 4003, message: "user with the same email already exists"};
-    let identityPhoneNoCheck = await app.model.Users.findOne({condition: { phoneNo: phoneNo, dappName: dappName, _deleted_: '0' }});
-    if(identityPhoneNoCheck) return {customCode: 4009, message: "user with the same phoneNo already exists"};
+    // let identityPhoneNoCheck = await app.model.Users.findOne({condition: { phoneNo: phoneNo, dappName: dappName, _deleted_: '0' }});
+    // if(identityPhoneNoCheck) return {customCode: 4009, message: "user with the same phoneNo already exists"};
 
     let userProfile = await app.model.Users.findOne({condition: { email: email, _deleted_: '0' }});
     //let userProfile = await app.model.Users.findAll({condition: { email: email, _deleted_: '0' }});
@@ -140,7 +140,14 @@ app.route.put('/user/:token',  async function (req) {
 app.route.post('/users/login',  async function (req) {
     let userId =  req.query.userId;
     let dappName = req.query.dappName;
-    let user = await app.model.Users.findOne({ condition: {phoneNo: req.query.userId, dappName: req.query.dappName} });
+    let condition = {dappName: req.query.dappName};
+    if(req.query.userId) {
+      condition.phoneNo = req.query.userId;
+    }
+    if(req.query.email) {
+      condition.email = req.query.email;
+    }
+    let user = await app.model.Users.findOne({ condition: condition });
     if (!user) return {customCode: 4005, message: 'userId does not exists'};
 
     let decryptedPassword = aesUtil.decrypt(user.password, constants.cipher.key);
