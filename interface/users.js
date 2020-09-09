@@ -182,10 +182,40 @@ app.route.post('/users/role/:roleType',  async function (req) {
 });
 
 app.route.post('/users/auth/forgetPassword',  async function (req) {
-    let user = await app.model.Users.exists({ phoneNo: req.query.userId, dappName: req.query.dappName });
-    if(!user) return {customCode: 4005, message: 'userId does not exists'};
+    let condition = {dappName: req.query.dappName};
+    if(req.query.phoneNo) {
+      condition.phoneNo = req.query.userId;
+    }
+    if(req.query.email) {
+      condition.email = req.query.email;
+    }
 
-    let token = auth.generateToken({userId: req.query.userId, dappName: req.query.dappName});
+    let user = await app.model.Users.exists(condition);
+    if(!user) return {customCode: 4005, message: 'user does not exists'};
+
+    let token = auth.generateToken(condition);
+    return {token: token};
+});
+
+app.route.post('/users/auth/resetPassword',  async function (req) {
+    let condition = {dappName: req.query.dappName};
+    if(req.query.phoneNo) {
+      condition.phoneNo = req.query.userId;
+    }
+    if(req.query.email) {
+      condition.email = req.query.email;
+    }
+
+    if(_.isEqual(req.query.oldPassword, req.query.newPassword)) return {customCode: 4007, message: "password can not be same"};
+
+    let user = await app.model.Users.findOne({ condition: condition });
+    if (!user) return {customCode: 4005, message: 'userId does not exists'};
+
+    let decryptedPassword = aesUtil.decrypt(user.password, constants.cipher.key);
+    if(!_.isEqual(decryptedPassword, req.query.oldPassword)) return {customCode: 4007, message: "incorrect password"};
+
+    condition.password = req.query.newPassword;
+    let token = auth.generateToken(condition);
     return {token: token};
 });
 
@@ -193,16 +223,23 @@ app.route.put('/users/auth/confirmPassword/:token',  async function (req) {
     let data = auth.parseRequestToken(req.params.token);
     if(!data) return {customCode: 4004, message: "token expired"};
 
-    let user = await app.model.Users.exists({ phoneNo: data.userId, dappName: data.dappName });
-    if(!user) return {customCode: 4005, message: 'userId does not exists'};
+    if(data.userId) {
+      var user = await app.model.Users.exists({ phoneNo: data.phoneNo, dappName: data.dappName });
+      if(!user) return {customCode: 4005, message: 'userId does not exists'};
+    } else if(data.email) {
+      var user = await app.model.Users.exists({ email: data.email, dappName: data.dappName });
+      if(!user) return {customCode: 4005, message: 'email does not exists'};
+    }
 
-    if(!req.query.password.match(constants.regex)) return  {customCode: 4001, message: 'Password must contain 6 to 20 at least one numeric digit, one uppercase and one lowercase letter'};
+    let password = req.query.password || data.password;
 
-    let encryptedPassword = aesUtil.encrypt(req.query.password, constants.cipher.key);
+    if(!password.match(constants.regex)) return  {customCode: 4001, message: 'Password must contain 6 to 20 at least one numeric digit, one uppercase and one lowercase letter'};
+
+    let encryptedPassword = aesUtil.encrypt(password, constants.cipher.key);
     let options = {
       type: TransactionTypes.CONFIRM_PASSWORD,
       fee: String(constants.fees.updateUser * constants.fixedPoint),
-      args: JSON.stringify([data.userId, encryptedPassword, data.dappName])
+      args: JSON.stringify([data.phoneNo, data.email, encryptedPassword, data.dappName])
     };
     let transaction = belriumJS.dapp.createInnerTransaction(options, constants.admin.secret);
     let dappId = util.getDappID();

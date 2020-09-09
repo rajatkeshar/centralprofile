@@ -25,12 +25,15 @@ module.exports = {
       transactionId: this.trs.id
     });
   },
-  confirmPassword: async function(phoneNo, password, dappName) {
+  confirmPassword: async function(phoneNo, email, password, dappName) {
     console.log("calling contract confirmPassword: ", this);
     app.sdb.lock('users.confirmPassword@' + phoneNo);
-    let exists = await app.model.Users.exists({phoneNo: phoneNo});
-    console.log("exists: ", exists);
-    if (!exists) return 'invalid user';
-    app.sdb.update('User', { password: password }, {phoneNo: phoneNo, dappName: dappName});
+
+    if(phoneNo) {
+      app.sdb.update('User', { password: password }, {phoneNo: phoneNo, dappName: dappName});
+    }
+    if(email) {
+      app.sdb.update('User', { password: password }, {email: email, dappName: dappName});
+    }
   }
 }
