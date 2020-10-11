@@ -38,7 +38,7 @@ app.route.put('/user',  async function (req) {
     let hash = req.query.hash;
     let encryptedPassword = aesUtil.encrypt(password, constants.cipher.key);
 
-    if(!password.match(constants.regex)) return  {customCode: 4001, message: 'password must contain 6 to 20 at least one numeric digit, one uppercase and one lowercase letter'};
+    if(!password.match(constants.regex)) return  {customCode: 4001, message: 'password must contain 7 to 20 at least one numeric digit, one uppercase and one lowercase letter'};
     //if(String(phoneNo).length != 10) return {customCode: 4002, message: 'invalid phoneNo'};
 
     let identityEmailCheck = await app.model.Users.findOne({condition: { email: email, dappName: dappName, _deleted_: '0' }});
@@ -74,17 +74,14 @@ app.route.put('/user',  async function (req) {
       console.log("Registering the Recipient on BKVS ", email, password);
       var response = await bkbsLogin({ email: constants.superUser.email, password: constants.superUser.password });
       console.log("response: ", response);
-      if(!response.isSuccess) return {customCode: 3001, message: "something went wrong"};
+      if(!response.isSuccess) return {customCode: 3001, message: JSON.stringify(response), isSuccess: false}
 
-      var options = {
-        name: fName, lastName: lName, email: email, countryCode: countryCode, groupName: groupName, password: password, type: "user"
-      }
+      var options = { name: fName, lastName: lName, email: email, countryCode: countryCode, groupName: groupName, password: password, type: "user" };
 
       console.log("calling registration call with parameters: ", options, response.data.token);
       var response = await bkbsCall.call('POST', '/api/v1/merchant/user/register', options, response.data.token);
       console.log("bkbs register user response: ", response)
 
-      if(!response) return {customCode: 3001, message: "something went wrong"}
       if(!response.isSuccess) return {customCode: 3001, message: JSON.stringify(response), isSuccess: false}
 
       let wallet = response.data;
@@ -233,7 +230,7 @@ app.route.put('/users/auth/confirmPassword/:token',  async function (req) {
 
     let password = req.query.password || data.password;
 
-    if(!password.match(constants.regex)) return  {customCode: 4001, message: 'Password must contain 6 to 20 at least one numeric digit, one uppercase and one lowercase letter'};
+    if(!password.match(constants.regex)) return  {customCode: 4001, message: 'Password must contain 7 to 20 at least one numeric digit, one uppercase and one lowercase letter'};
 
     let encryptedPassword = aesUtil.encrypt(password, constants.cipher.key);
     let options = {

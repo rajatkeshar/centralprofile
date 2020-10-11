@@ -17,7 +17,7 @@ module.exports = {
     algorithm: "aes-256-cbc",
     key: "CentralServerSecret"
   },
-  regex: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/,
+  regex: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{7,20}$/,
   fees: {
     send: 0.001,
     inTransfer: 0.001,
