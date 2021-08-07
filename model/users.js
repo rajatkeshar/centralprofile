@@ -51,7 +51,7 @@ module.exports = {
         type: 'String',
         length: 256,
         default: "user",        
-        enum: ["merchant", "user", 'superadmin','miniadmin','clinicmaster','clinicadmin','clinicauthorizer','clinicissuer','patient']
+        enum: ["merchant","user",'superadmin','miniadmin','clinicmaster','clinicadmin','clinicauthorizer','clinicissuer','patient','issuer','authorizer']
       },
       {
         name: 'status',
