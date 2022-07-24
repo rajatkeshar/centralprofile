@@ -88,6 +88,11 @@ module.exports = {
         name: 'transactionId',
         type: 'String',
         length: 256
+      },
+      {
+        name: 'abhaId',
+        type: 'String',
+        length: 25
       }
     ]
   }
