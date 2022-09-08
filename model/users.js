@@ -93,6 +93,21 @@ module.exports = {
         name: 'abhaId',
         type: 'String',
         length: 25
+      },
+      {
+        name: 'abhaNo',
+        type: 'String',
+        length: 25
+      },
+      {
+        name: 'abhaCardUrl',
+        type: 'String',
+        length: 256
+      },
+      {
+        name: 'adharNo',
+        type: 'String',
+        length: 12
       }
     ]
   }

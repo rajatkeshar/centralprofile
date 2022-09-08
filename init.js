@@ -17,6 +17,11 @@ module.exports = async function () {
           name: "confirm password",
           location: 'users.confirmPassword'
       },
+      updateUser: {
+        type: TransactionTypes.UPDATE_USER,
+        name: "update user",
+        location: 'users.updateUser'
+      }
   }
   console.log("app: ", app.contract);
   for(i in contractObjects){

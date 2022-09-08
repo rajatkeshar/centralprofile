@@ -109,6 +109,40 @@ app.route.put('/user',  async function (req) {
     }
 })
 
+app.route.put('/user/update',  async function (req) {
+  if(!req.query.email && !req.query.password) return {customCode: 4011, message: "invalid params"};
+
+  let email = (req.query.email)? req.query.email.toLowerCase(): null;
+  let dappName = req.query.dappName.toLowerCase();
+  let dappId = util.getDappID();
+
+  let condition = {dappName: dappName, email: email };
+  let user = await app.model.Users.findOne({ condition: condition });
+  if (!user) return {customCode: 4005, message: 'userId does not exists'};
+  
+  let abhaId = req.query.abhaId || user.abhaId;
+  let abhaNo = req.query.abhaNo || user.abhaNo;
+  let abhaCardUrl = req.query.abhaCardUrl || user.abhaCardUrl;
+  let adharNo = req.query.adharNo || user.adharNo;
+
+  let decryptedPassword = aesUtil.decrypt(user.password, constants.cipher.key);
+  if(!_.isEqual(decryptedPassword, req.query.password)) return {customCode: 4007, message: "incorrect password"};
+
+  // trnsaction flow
+  let options = {
+    type: TransactionTypes.UPDATE_USER,
+    fee: String(constants.fees.updateUser * constants.fixedPoint),
+    args: JSON.stringify([email, dappName, abhaId, abhaNo, abhaCardUrl, adharNo])
+  };
+
+  let transaction = belriumJS.dapp.createInnerTransaction(options, constants.admin.secret);
+  let params = { transaction: transaction };
+
+  console.log("updateUser data: ", params);
+  let res = await httpCall.call('PUT', `/api/dapps/${dappId}/transactions/signed`, params);
+  return res;
+});
+
 app.route.put('/user/:token',  async function (req) {
     let data = auth.parseRequestToken(req.params.token);
     if(!data) return {customCode: 4004, message: "token expired"};

@@ -11,7 +11,7 @@ module.exports = {
   superUser: {
     email: "belfricsexchange@gmail.com",
     password: "Be@My*20T",
-    secret: "kQuZcJaPzcBm"
+    secret: "6eac1059e02d"
   },
   cipher: {
     algorithm: "aes-256-cbc",

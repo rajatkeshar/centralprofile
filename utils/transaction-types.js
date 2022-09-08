@@ -4,4 +4,5 @@ module.exports = {
   IN_TRANSFER: 3,
   REGISTER_USER: 5001,
   CONFIRM_PASSWORD: 5002,
+  UPDATE_USER: 5003
 }

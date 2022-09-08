@@ -36,5 +36,14 @@ module.exports = {
     if(email) {
       app.sdb.update('User', { password: password }, {email: email, dappName: dappName});
     }
+  },
+  updateUser: async function(email, dappName, abhaId, abhaNo, abhaCardUrl, adharNo) {
+    console.log("calling contract updateUser: ", this);
+    app.sdb.lock('users.updateUser@' + email);
+
+    app.sdb.update('User', { abhaId: abhaId || null }, {email: email, dappName: dappName});
+    app.sdb.update('User', { abhaNo: abhaNo || null }, {email: email, dappName: dappName});
+    app.sdb.update('User', { abhaCardUrl: abhaCardUrl || null }, {email: email, dappName: dappName});
+    app.sdb.update('User', { adharNo: adharNo || null }, {email: email, dappName: dappName});
   }
 }
