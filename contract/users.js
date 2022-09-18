@@ -1,7 +1,7 @@
 var constants = require('../utils/constants.js');
 
 module.exports = {
-  registerUsers: async function(fName, lName, address, secret, phoneNo, email, password, dappName, role, hash, countryCode, abhaId, dappId) {
+  registerUsers: async function(fName, lName, address, secret, phoneNo, email, password, dappName, role, hash, countryCode, abhaId, abhaNo, abhaCardUrl, adharNo, dappId) {
     console.log("calling contract registerUsers: ", this);
     app.sdb.lock('users.registerUsers@' + email);
     // let exists = await app.model.Users.exists({email: email, phoneNo: phoneNo});
@@ -23,7 +23,10 @@ module.exports = {
       timestamp: this.trs.timestamp,
       dappId: (dappId)? dappId: null,
       transactionId: this.trs.id,
-      abhaId: (abhaId)? abhaId: null
+      abhaId: (abhaId)? abhaId: null,
+      abhaNo: (abhaNo)? abhaNo: null,
+      abhaCardUrl: (abhaCardUrl)? abhaCardUrl: null,
+      adharNo: (adharNo)? adharNo: null
     });
   },
   confirmPassword: async function(phoneNo, email, password, dappName) {

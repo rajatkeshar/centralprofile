@@ -38,6 +38,9 @@ app.route.put('/user',  async function (req) {
     let hash = req.query.hash;
     let encryptedPassword = aesUtil.encrypt(password, constants.cipher.key);
     let abhaId = req.query.abhaId || "";
+    let abhaNo = req.query.abhaNo || "";
+    let abhaCardUrl = req.query.abhaCardUrl || "";
+    let adharNo = req.query.adharNo || "";
 
     if(!password.match(constants.regex)) return  {customCode: 4001, message: 'password must contain 7 to 20 at least one numeric digit, one uppercase and one lowercase letter'};
     //if(String(phoneNo).length != 10) return {customCode: 4002, message: 'invalid phoneNo'};
@@ -58,7 +61,7 @@ app.route.put('/user',  async function (req) {
       var options = {
         type: TransactionTypes.REGISTER_USER,
         fee: String(constants.fees.registerUsers * constants.fixedPoint),
-        args: JSON.stringify([fName, lName, wallet.walletAddress, userProfile.secret, phoneNo, email, encryptedPassword, dappName, role, hash, countryCode, abhaId])
+        args: JSON.stringify([fName, lName, wallet.walletAddress, userProfile.secret, phoneNo, email, encryptedPassword, dappName, role, hash, countryCode, abhaId, abhaNo, abhaCardUrl, adharNo])
       };
       let transaction = belriumJS.dapp.createInnerTransaction(options, constants.admin.secret);
       let params = { transaction: transaction };
@@ -91,7 +94,7 @@ app.route.put('/user',  async function (req) {
       var options = {
         type: TransactionTypes.REGISTER_USER,
         fee: String(constants.fees.registerUsers * constants.fixedPoint),
-        args: JSON.stringify([fName, lName, wallet.walletAddress, encryptedSecret, phoneNo, email, encryptedPassword, dappName, role, hash, countryCode, abhaId])
+        args: JSON.stringify([fName, lName, wallet.walletAddress, encryptedSecret, phoneNo, email, encryptedPassword, dappName, role, hash, countryCode, abhaId, abhaNo, abhaCardUrl, adharNo])
       };
       let transaction = belriumJS.dapp.createInnerTransaction(options, constants.admin.secret);
       let params = { transaction: transaction };
@@ -101,7 +104,7 @@ app.route.put('/user',  async function (req) {
       response.transactionId = res.transactionId;
       return response;
     } else {
-      let jwtToken = auth.generateToken({fName: fName, lName:lName, phoneNo:phoneNo, email: email, encryptedPassword: encryptedPassword, dappName: dappName, role: role, hash: hash, countryCode: countryCode, abhaId});
+      let jwtToken = auth.generateToken({fName: fName, lName:lName, phoneNo:phoneNo, email: email, encryptedPassword: encryptedPassword, dappName: dappName, role: role, hash: hash, countryCode: countryCode, abhaId, abhaNo, abhaCardUrl, adharNo});
       let response = {};
       response.jwtToken = jwtToken;
       response.message = "awaiting for wallet address"
@@ -158,7 +161,7 @@ app.route.put('/user/:token',  async function (req) {
     let options = {
       type: TransactionTypes.REGISTER_USER,
       fee: String(constants.fees.registerUsers * constants.fixedPoint),
-      args: JSON.stringify([data.fName, data.lName, data.walletAddress, data.encryptedSecret, data.phoneNo, data.email, data.encryptedPassword, data.dappName, data.role, data.hash, data.countryCode, abhaId])
+      args: JSON.stringify([data.fName, data.lName, data.walletAddress, data.encryptedSecret, data.phoneNo, data.email, data.encryptedPassword, data.dappName, data.role, data.hash, data.countryCode, abhaId, abhaNo, abhaCardUrl, adharNo])
     };
 
     let transaction = belriumJS.dapp.createInnerTransaction(options, constants.admin.secret);
