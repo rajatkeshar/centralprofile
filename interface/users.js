@@ -61,7 +61,7 @@ app.route.put('/user',  async function (req) {
       var options = {
         type: TransactionTypes.REGISTER_USER,
         fee: String(constants.fees.registerUsers * constants.fixedPoint),
-        args: JSON.stringify([fName, lName, wallet.walletAddress, userProfile.secret, phoneNo, email, encryptedPassword, dappName, role, hash, countryCode, abhaId, abhaNo, abhaCardUrl, adharNo])
+        args: JSON.stringify([fName, lName, userProfile.address, userProfile.secret, phoneNo, email, encryptedPassword, dappName, role, hash, countryCode, abhaId, abhaNo, abhaCardUrl, adharNo])
       };
       let transaction = belriumJS.dapp.createInnerTransaction(options, constants.admin.secret);
       let params = { transaction: transaction };
